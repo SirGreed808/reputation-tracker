@@ -27,8 +27,8 @@ export default function Dashboard() {
     <>
       <div className="page-header">
         <div>
-          <h1 className="page-title">Kai&apos;s Auto Repair</h1>
-          <p className="page-subtitle">Honolulu, HI · 90-day reputation overview</p>
+          <h1 className="page-title">Acme Auto Repair</h1>
+          <p className="page-subtitle">Demo Location · 90-day reputation overview</p>
         </div>
         {stats && stats.unansweredAlerts > 0 && (
           <div className="alert alert-warning" style={{ margin: 0 }}>
