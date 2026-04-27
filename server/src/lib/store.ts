@@ -17,5 +17,6 @@ export function addFollowup(f: Omit<FollowupRequest, 'id' | 'created_at'>): Foll
     created_at: new Date().toISOString(),
   }
   followups.unshift(record)
+  if (followups.length > 100) followups.splice(100)
   return record
 }

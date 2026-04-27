@@ -1,8 +1,12 @@
-const BASE = import.meta.env.VITE_API_URL || 'http://localhost:3002'
+const BASE = (() => {
+  const url = import.meta.env.VITE_API_URL
+  if (!url && import.meta.env.PROD) throw new Error('VITE_API_URL env var is required in production')
+  return url || 'http://localhost:3002'
+})()
 
 async function get(path: string) {
   const res = await fetch(`${BASE}${path}`)
-  if (!res.ok) throw new Error(await res.text())
+  if (!res.ok) throw new Error('Request failed')
   return res.json()
 }
 
@@ -12,13 +16,16 @@ async function post(path: string, body: unknown) {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(body),
   })
-  if (!res.ok) throw new Error(await res.text())
+  if (!res.ok) {
+    const data = await res.json().catch(() => ({}))
+    throw new Error(data.error || 'Request failed')
+  }
   return res.json()
 }
 
 async function patch(path: string) {
   const res = await fetch(`${BASE}${path}`, { method: 'PATCH' })
-  if (!res.ok) throw new Error(await res.text())
+  if (!res.ok) throw new Error('Request failed')
   return res.json()
 }
 

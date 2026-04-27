@@ -12,7 +12,7 @@ export default function TopNav() {
       <div className="top-nav-inner">
         <div className="top-nav-brand">
           <span className="top-nav-logo">RepuTrack</span>
-          <span className="top-nav-demo-badge">Live Demo · Acme Auto Repair</span>
+          <span className="top-nav-demo-badge">Live Demo · Kai's Auto Repair</span>
         </div>
         <nav className="top-nav-links">
           {navItems.map(item => (

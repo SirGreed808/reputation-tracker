@@ -15,11 +15,11 @@ export default function Followups() {
   const [email, setEmail] = useState('')
   const [phone, setPhone] = useState('')
   const [sending, setSending] = useState(false)
-  const [result, setResult] = useState<{ type: 'success' | 'qr'; message: string; qrDataUrl?: string } | null>(null)
+  const [result, setResult] = useState<{ type: 'success' | 'qr' | 'error'; message: string; qrDataUrl?: string } | null>(null)
   const [smsPreview, setSmsPreview] = useState<string | null>(null)
 
   useEffect(() => {
-    api.followups.list().then(setRequests)
+    api.followups.list().then(setRequests).catch(() => {})
   }, [])
 
   async function send(e: React.FormEvent) {
@@ -46,19 +46,24 @@ export default function Followups() {
         setResult({ type: 'success', message: 'Email sent successfully.' })
       }
       setName(''); setEmail(''); setPhone('')
-    } catch (err: any) {
-      setResult({ type: 'success', message: `Error: ${err.message}` })
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Could not send'
+      setResult({ type: 'error', message: msg === 'Request failed' ? 'Could not send — please try again.' : msg })
     } finally {
       setSending(false)
     }
   }
 
   async function logSms() {
-    const data = await api.followups.send({ customer_name: name, customer_phone: phone, channel: 'sms' })
-    setRequests(prev => [data, ...prev])
-    setSmsPreview(null)
-    setResult({ type: 'success', message: 'SMS logged as simulated.' })
-    setName(''); setPhone('')
+    try {
+      const data = await api.followups.send({ customer_name: name, customer_phone: phone, channel: 'sms' })
+      setRequests(prev => [data, ...prev])
+      setSmsPreview(null)
+      setResult({ type: 'success', message: 'SMS logged as simulated.' })
+      setName(''); setPhone('')
+    } catch {
+      setResult({ type: 'error', message: 'Could not log — please try again.' })
+    }
   }
 
   return (
@@ -74,10 +79,12 @@ export default function Followups() {
         <div className="card">
           <div className="card-header">New Request</div>
           <div className="card-body">
-            <div className="channel-tabs">
+            <div className="channel-tabs" role="radiogroup" aria-label="Select send channel">
               {channels.map(ch => (
                 <button
                   key={ch.id}
+                  role="radio"
+                  aria-checked={channel === ch.id}
                   className={`channel-tab${channel === ch.id ? ' active' : ''}`}
                   onClick={() => { setChannel(ch.id); setResult(null); setSmsPreview(null) }}
                   type="button"
@@ -96,19 +103,19 @@ export default function Followups() {
 
             <form onSubmit={send}>
               <div className="form-group">
-                <label className="form-label">Customer Name *</label>
-                <input className="form-input" value={name} onChange={e => setName(e.target.value)} required autoFocus />
+                <label className="form-label" htmlFor="followup-name">Customer Name *</label>
+                <input id="followup-name" className="form-input" value={name} onChange={e => setName(e.target.value)} required autoFocus maxLength={80} />
               </div>
               {channel === 'email' && (
                 <div className="form-group">
-                  <label className="form-label">Email *</label>
-                  <input className="form-input" type="email" value={email} onChange={e => setEmail(e.target.value)} required />
+                  <label className="form-label" htmlFor="followup-email">Email *</label>
+                  <input id="followup-email" className="form-input" type="email" value={email} onChange={e => setEmail(e.target.value)} required maxLength={254} />
                 </div>
               )}
               {(channel === 'sms' || channel === 'qr') && (
                 <div className="form-group">
-                  <label className="form-label">Phone {channel === 'sms' ? '*' : '(optional)'}</label>
-                  <input className="form-input" type="tel" value={phone} onChange={e => setPhone(e.target.value)} required={channel === 'sms'} />
+                  <label className="form-label" htmlFor="followup-phone">Phone {channel === 'sms' ? '*' : '(optional)'}</label>
+                  <input id="followup-phone" className="form-input" type="tel" value={phone} onChange={e => setPhone(e.target.value)} required={channel === 'sms'} maxLength={20} />
                 </div>
               )}
               <button className="btn btn-primary btn-full" type="submit" disabled={sending}>
@@ -128,7 +135,12 @@ export default function Followups() {
             )}
 
             {result && (
-              <div className="alert alert-success" style={{ marginTop: 12 }}>
+              <div
+                className={`alert ${result.type === 'error' ? 'alert-danger' : 'alert-success'}`}
+                style={{ marginTop: 12 }}
+                role="status"
+                aria-live="polite"
+              >
                 {result.message}
                 {result.qrDataUrl && (
                   <div style={{ marginTop: 12 }}>

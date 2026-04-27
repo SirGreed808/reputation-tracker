@@ -34,10 +34,12 @@ export default function Reviews() {
         </div>
       </div>
 
-      <div className="filter-tabs">
+      <div className="filter-tabs" role="radiogroup" aria-label="Filter by sentiment">
         {(['all', 'positive', 'neutral', 'negative'] as const).map(s => (
           <button
             key={s}
+            role="radio"
+            aria-checked={filter === s}
             className={`filter-tab${filter === s ? ' active' : ''}`}
             onClick={() => setFilter(s)}
           >
@@ -47,7 +49,10 @@ export default function Reviews() {
         ))}
       </div>
 
-      {loading ? <div className="loading-bar" /> : <ReviewFeed reviews={filtered} onRespond={markResponded} />}
+      {loading
+        ? <div className="loading-bar" role="status" aria-label="Loading" />
+        : <ReviewFeed reviews={filtered} onRespond={markResponded} />
+      }
     </>
   )
 }

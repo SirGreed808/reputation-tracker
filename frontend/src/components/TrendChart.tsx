@@ -70,7 +70,9 @@ export default function TrendChart({ trend }: Props) {
     <div className="card trend-card">
       <div className="card-header">90-Day Trend</div>
       <div className="card-body" style={{ height: 240 }}>
-        <Line data={data} options={options} />
+        <div role="img" aria-label="90-day reputation trend: score and average rating over time" style={{ height: '100%' }}>
+          <Line data={data} options={options} />
+        </div>
       </div>
     </div>
   )
