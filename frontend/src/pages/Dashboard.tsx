@@ -27,7 +27,7 @@ export default function Dashboard() {
     <>
       <div className="page-header">
         <div>
-          <h1 className="page-title">Acme Auto Repair</h1>
+          <h1 className="page-title">Kai's Auto Repair</h1>
           <p className="page-subtitle">Demo Location · 90-day reputation overview</p>
         </div>
         {stats && stats.unansweredAlerts > 0 && (
