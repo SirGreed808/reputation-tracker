@@ -1,8 +1,4 @@
-const BASE = (() => {
-  const url = import.meta.env.VITE_API_URL
-  if (!url && import.meta.env.PROD) throw new Error('VITE_API_URL env var is required in production')
-  return url || 'http://localhost:3002'
-})()
+const BASE = import.meta.env.VITE_API_URL || 'http://localhost:3002'
 
 async function get(path: string) {
   const res = await fetch(`${BASE}${path}`)
