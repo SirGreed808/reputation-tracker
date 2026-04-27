@@ -6,11 +6,6 @@ import reviewRoutes from './routes/reviews'
 import followupRoutes from './routes/followups'
 import { BUSINESS_NAME, LOCATION_ID } from './lib/store'
 
-// Fail fast — don't start without required env
-if (!process.env.RESEND_API_KEY) {
-  console.error('FATAL: RESEND_API_KEY is required')
-  process.exit(1)
-}
 if (!process.env.FRONTEND_URL) {
   console.warn('WARN: FRONTEND_URL not set — CORS will allow localhost only')
 }

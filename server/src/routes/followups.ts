@@ -1,6 +1,5 @@
 import { Router } from 'express'
 import rateLimit from 'express-rate-limit'
-import { Resend } from 'resend'
 import QRCode from 'qrcode'
 import { addFollowup, BUSINESS_NAME, GOOGLE_REVIEW_URL } from '../lib/store'
 
@@ -60,14 +59,8 @@ router.post('/', followupLimiter, async (req, res) => {
         res.status(400).json({ error: 'Valid customer_email required' })
         return
       }
-      const resend = new Resend(process.env.RESEND_API_KEY!)
-      const { error } = await resend.emails.send({
-        from: process.env.FROM_EMAIL || 'onboarding@resend.dev',
-        to: customer_email,
-        subject: `How was your experience at ${BUSINESS_NAME}?`,
-        html: `<p>Hi ${safeName}! Thanks for choosing ${escapeHtml(BUSINESS_NAME)}. We'd love your feedback — it only takes a minute:</p><p><a href="${GOOGLE_REVIEW_URL}">Leave a Review →</a></p>`,
-      })
-      if (error) { res.status(500).json({ error: 'Email send failed' }); return }
+      // Demo mode — simulates a successful send without a live email account
+      console.log(`[demo] email to ${customer_email}: ${message}`)
 
       const record = addFollowup({ location_id: 'kai-auto-honolulu', customer_name, customer_email, customer_phone: customer_phone || null, channel, status: 'sent', message_body: message, sent_at: new Date().toISOString() })
       res.json(record)
