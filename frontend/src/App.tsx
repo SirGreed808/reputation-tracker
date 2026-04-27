@@ -5,9 +5,21 @@ import Reviews from './pages/Reviews'
 import Followups from './pages/Followups'
 import './index.css'
 
+function AmbientBackground() {
+  return (
+    <div className="ambient-bg" aria-hidden="true">
+      <div className="ambient-orb ambient-orb-1" />
+      <div className="ambient-orb ambient-orb-2" />
+      <div className="ambient-orb ambient-orb-3" />
+      <div className="ambient-orb ambient-orb-4" />
+    </div>
+  )
+}
+
 export default function App() {
   return (
     <BrowserRouter>
+      <AmbientBackground />
       <div className="app-shell">
         <TopNav />
         <main className="main-content">
