@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: reputation-tracker-api
+    runtime: node
+    rootDir: server
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    envVars:
+      - key: NODE_VERSION
+        value: 20.9.0
+      - key: FRONTEND_URL
+        value: https://reviews.honestdev808.com
+      - key: FROM_EMAIL
+        value: onboarding@resend.dev
+      - key: RESEND_API_KEY
+        sync: false

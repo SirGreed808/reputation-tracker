@@ -2,7 +2,7 @@
 
 A live-demo reputation tracking dashboard for local businesses. Built to show prospective clients what their review monitoring could look like — no login required, demo data loads instantly.
 
-**[View Live Demo](https://reputation-tracker-demo.netlify.app)** *(deploy link TBD)*
+**[View Live Demo](https://reviews.honestdev808.com)**
 
 ---
 
