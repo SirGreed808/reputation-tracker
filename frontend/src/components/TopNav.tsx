@@ -1,12 +1,8 @@
 import { NavLink } from 'react-router-dom'
 
-const navItems = [
-  { label: 'Dashboard', to: '/' },
-  { label: 'Reviews', to: '/reviews' },
-  { label: 'Follow-ups', to: '/followups' },
-]
+interface Props { alertCount: number }
 
-export default function TopNav() {
+export default function TopNav({ alertCount }: Props) {
   return (
     <header className="top-nav">
       <div className="top-nav-inner">
@@ -15,16 +11,18 @@ export default function TopNav() {
           <span className="top-nav-demo-badge">Live Demo · Kai's Auto Repair</span>
         </div>
         <nav className="top-nav-links">
-          {navItems.map(item => (
-            <NavLink
-              key={item.to}
-              to={item.to}
-              end={item.to === '/'}
-              className={({ isActive }) => `top-nav-link${isActive ? ' active' : ''}`}
-            >
-              {item.label}
-            </NavLink>
-          ))}
+          <NavLink to="/" end className={({ isActive }) => `top-nav-link${isActive ? ' active' : ''}`}>
+            Dashboard
+          </NavLink>
+          <NavLink to="/reviews" className={({ isActive }) => `top-nav-link${isActive ? ' active' : ''}`}>
+            Reviews
+            {alertCount > 0 && (
+              <span className="nav-badge" aria-label={`${alertCount} unanswered`}>{alertCount}</span>
+            )}
+          </NavLink>
+          <NavLink to="/followups" className={({ isActive }) => `top-nav-link${isActive ? ' active' : ''}`}>
+            Follow-ups
+          </NavLink>
         </nav>
         <a
           href="https://honestdev808.com"

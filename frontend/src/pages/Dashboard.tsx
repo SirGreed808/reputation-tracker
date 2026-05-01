@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { api } from '../lib/api'
 import type { Review, StatsResponse } from '../types'
 import ScoreCard from '../components/ScoreCard'
@@ -9,12 +10,19 @@ export default function Dashboard() {
   const [stats, setStats] = useState<StatsResponse | null>(null)
   const [reviews, setReviews] = useState<Review[]>([])
   const [loading, setLoading] = useState(true)
+  const [toast, setToast] = useState(false)
 
   useEffect(() => {
     Promise.all([api.reviews.stats(), api.reviews.list()])
       .then(([s, r]) => { setStats(s); setReviews(r) })
       .finally(() => setLoading(false))
   }, [])
+
+  useEffect(() => {
+    if (loading) return
+    const t = setTimeout(() => setToast(true), 2500)
+    return () => clearTimeout(t)
+  }, [loading])
 
   async function markResponded(id: string) {
     await api.reviews.respond(id)
@@ -25,6 +33,24 @@ export default function Dashboard() {
 
   return (
     <>
+      {toast && (
+        <div className="toast" role="alert">
+          <div className="toast-header">
+            <span className="toast-icon">🔔</span>
+            <span className="toast-title">New review alert</span>
+            <button className="toast-dismiss" onClick={() => setToast(false)} aria-label="Dismiss">✕</button>
+          </div>
+          <div className="toast-body">
+            <div className="toast-stars">★☆☆☆☆</div>
+            <p className="toast-text"><strong>James K.</strong> left a 1-star review on <strong>Google</strong></p>
+            <p className="toast-quote">"Waited 2 hours past my appointment. No one called to let me know."</p>
+          </div>
+          <div className="toast-footer">
+            <span className="toast-time">Just now</span>
+            <Link to="/reviews" className="toast-link" onClick={() => setToast(false)}>View review →</Link>
+          </div>
+        </div>
+      )}
       <div className="page-header">
         <div>
           <h1 className="page-title">Kai's Auto Repair</h1>

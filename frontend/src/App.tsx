@@ -1,8 +1,10 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import { useEffect, useState } from 'react'
 import TopNav from './components/TopNav'
 import Dashboard from './pages/Dashboard'
 import Reviews from './pages/Reviews'
 import Followups from './pages/Followups'
+import { api } from './lib/api'
 import './index.css'
 
 function AmbientBackground() {
@@ -17,11 +19,17 @@ function AmbientBackground() {
 }
 
 export default function App() {
+  const [alertCount, setAlertCount] = useState(0)
+
+  useEffect(() => {
+    api.reviews.stats().then(s => setAlertCount(s.unansweredAlerts))
+  }, [])
+
   return (
     <BrowserRouter>
       <AmbientBackground />
       <div className="app-shell">
-        <TopNav />
+        <TopNav alertCount={alertCount} />
         <main className="main-content">
           <Routes>
             <Route path="/" element={<Dashboard />} />
