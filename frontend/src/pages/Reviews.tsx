@@ -1,15 +1,19 @@
 import { useEffect, useState } from 'react'
 import { api } from '../lib/api'
 import type { Review } from '../types'
+import { FALLBACK_REVIEWS } from '../lib/fallback'
 import ReviewFeed from '../components/ReviewFeed'
 
 export default function Reviews() {
-  const [reviews, setReviews] = useState<Review[]>([])
+  const [reviews, setReviews] = useState<Review[]>(FALLBACK_REVIEWS)
   const [filter, setFilter] = useState<'all' | 'positive' | 'neutral' | 'negative'>('all')
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    api.reviews.list().then(r => { setReviews(r); setLoading(false) })
+    api.reviews.list()
+      .then(r => { setReviews(r) })
+      .catch(() => {})
+      .finally(() => setLoading(false))
   }, [])
 
   async function markResponded(id: string) {
