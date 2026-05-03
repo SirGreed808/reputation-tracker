@@ -1,7 +1,14 @@
 import { useEffect, useState } from 'react'
 import type { ReputationScore } from '../types'
 
-interface Props { score: ReputationScore }
+interface Props { score: ReputationScore; style?: React.CSSProperties }
+
+const SUBSCORE_TIPS: Record<string, string> = {
+  Rating: 'Your average star rating — the biggest single factor. Even a 0.1 drop moves you down in local search.',
+  Volume: 'More reviews signal an active, trusted business to Google. Thin volume hurts credibility.',
+  Recency: 'Recent reviews carry more weight. A great review from 2 years ago barely moves the needle.',
+  'Response Rate': 'How consistently you reply to reviews. Google rewards engagement — and so do customers.',
+}
 
 function ScoreMeter({ value, displayValue }: { value: number; displayValue: number }) {
   const color = value >= 75 ? 'var(--success)' : value >= 50 ? 'var(--warning)' : 'var(--danger)'
@@ -18,7 +25,12 @@ function ScoreMeter({ value, displayValue }: { value: number; displayValue: numb
 function SubScore({ label, value, max }: { label: string; value: number; max: number }) {
   return (
     <div className="subscore">
-      <div className="subscore-label">{label}</div>
+      <div className="subscore-label">
+        {label}
+        {SUBSCORE_TIPS[label] && (
+          <span className="subscore-tip" title={SUBSCORE_TIPS[label]}>?</span>
+        )}
+      </div>
       <div className="subscore-bar-wrap">
         <div className="subscore-bar" style={{ width: `${(value / max) * 100}%` }} />
       </div>
@@ -27,7 +39,7 @@ function SubScore({ label, value, max }: { label: string; value: number; max: nu
   )
 }
 
-export default function ScoreCard({ score }: Props) {
+export default function ScoreCard({ score, style }: Props) {
   const [displayScore, setDisplayScore] = useState(0)
 
   useEffect(() => {
@@ -45,10 +57,17 @@ export default function ScoreCard({ score }: Props) {
   }, [score.score])
 
   return (
-    <div className="card score-card">
+    <div className="card score-card" style={style}>
       <div className="card-header">Reputation Health Score</div>
       <div className="card-body">
         <ScoreMeter value={score.score} displayValue={displayScore} />
+        <p className="insight-nudge">
+          {score.score < 60
+            ? "Below 60, most customers scroll past without clicking."
+            : score.score < 80
+            ? "Most businesses here lose 1 in 3 undecided customers to a competitor."
+            : "Top tier. This is where word-of-mouth starts compounding."}
+        </p>
 
         <div className="score-meta">
           <div className="score-meta-item">

@@ -93,7 +93,10 @@ export function generateSeedReviews(locationId: string): Review[] {
     { daysAgo: 1, rating: 5, type: 'positive' },
   ]
 
-  for (const item of [...phase1, ...phase2, ...phase3, ...phase4]) {
+  const allItems = [...phase1, ...phase2, ...phase3, ...phase4]
+
+  for (let i = 0; i < allItems.length; i++) {
+    const item = allItems[i]
     const sentiment = item.type as 'positive' | 'neutral' | 'negative'
     const reviewer = sentiment === 'positive'
       ? randomFrom(positiveReviewers)
@@ -107,9 +110,8 @@ export function generateSeedReviews(locationId: string): Review[] {
       ? randomFrom(negativeTexts)
       : randomFrom(neutralTexts)
 
-    // Owner responded to most phase3 + phase4 reviews
-    const responded = item.daysAgo <= 39 && item.daysAgo > 20 && Math.random() > 0.3
-    const respondedFull = item.daysAgo <= 20
+    // ~25% responded — every 4th review, spread across all phases
+    const responded = i % 4 === 0
 
     reviews.push({
       id: crypto.randomUUID(),
@@ -121,7 +123,9 @@ export function generateSeedReviews(locationId: string): Review[] {
       review_date: dateStr(item.daysAgo),
       platform: Math.random() > 0.2 ? 'Google' : 'Yelp',
       sentiment,
-      responded_at: (responded || respondedFull) ? new Date(Date.now() - item.daysAgo * 86400000 + 86400000).toISOString() : null,
+      responded_at: responded ? new Date(Date.now() - item.daysAgo * 86400000 + 86400000).toISOString() : null,
+      draft_response: null,
+      draft_generated_at: null,
     })
   }
 

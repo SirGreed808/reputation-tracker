@@ -30,6 +30,8 @@ export interface Review {
   platform: string
   sentiment: 'positive' | 'neutral' | 'negative'
   responded_at: string | null
+  draft_response: string | null
+  draft_generated_at: string | null
   created_at: string
 }
 

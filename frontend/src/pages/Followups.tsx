@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { api } from '../lib/api'
 import type { FollowupRequest } from '../types'
+import CTAStrip from '../components/CTAStrip'
 
 const channels = [
   { id: 'email', label: 'Email', desc: 'Real email sent via Resend' },
@@ -81,10 +82,7 @@ export default function Followups() {
           <div className="card-body">
             <div className="channel-tabs" role="radiogroup" aria-label="Select send channel">
               {channels.map(ch => (
-                <button
-                  key={ch.id}
-                  role="radio"
-                  aria-checked={channel === ch.id}
+                <button key={ch.id} role="radio" aria-checked={channel === ch.id}
                   className={`channel-tab${channel === ch.id ? ' active' : ''}`}
                   onClick={() => { setChannel(ch.id); setResult(null); setSmsPreview(null) }}
                   type="button"
@@ -128,18 +126,13 @@ export default function Followups() {
                 <div className="sms-preview-header">SMS Preview <span className="simulated-tag">SIMULATED</span></div>
                 <div className="sms-preview-to">To: {phone || '(no phone)'}</div>
                 <div className="sms-preview-bubble">{smsPreview}</div>
-                <button className="btn btn-ghost btn-sm" style={{ marginTop: 12 }} onClick={logSms}>
-                  Log as sent
-                </button>
+                <button className="btn btn-ghost btn-sm" style={{ marginTop: 12 }} onClick={logSms}>Log as sent</button>
               </div>
             )}
 
             {result && (
-              <div
-                className={`alert ${result.type === 'error' ? 'alert-danger' : 'alert-success'}`}
-                style={{ marginTop: 12 }}
-                role="status"
-                aria-live="polite"
+              <div className={`alert ${result.type === 'error' ? 'alert-danger' : 'alert-success'}`}
+                style={{ marginTop: 12 }} role="status" aria-live="polite"
               >
                 {result.message}
                 {result.qrDataUrl && (
@@ -173,6 +166,8 @@ export default function Followups() {
           </div>
         </div>
       </div>
+
+      <CTAStrip variant="followups" />
     </>
   )
 }
