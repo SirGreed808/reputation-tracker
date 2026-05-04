@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800&family=Source+Serif+4:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=IBM+Plex+Mono:wght@400;500&display=swap');
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -160,41 +160,66 @@ a:hover { color: var(--red); }
 .ambient-orb {
   position: absolute;
   border-radius: 50%;
-  filter: blur(100px);
-  opacity: 0.3;
-  animation: orbFloat 30s ease-in-out infinite;
+  filter: blur(70px);
+  will-change: transform;
 }
 .ambient-orb-1 {
-  width: 400px; height: 400px;
-  background: radial-gradient(circle, var(--tan) 0%, transparent 70%);
-  top: -5%; left: -5%;
-  animation-delay: 0s;
+  width: 500px; height: 500px;
+  background: radial-gradient(circle, rgba(194, 102, 45, 0.35) 0%, transparent 70%);
+  top: -10%; left: -10%;
+  animation: orbDrift1 26s ease-in-out infinite;
 }
 .ambient-orb-2 {
-  width: 350px; height: 350px;
-  background: radial-gradient(circle, #dcc8b0 0%, transparent 70%);
-  top: 40%; right: -8%;
-  animation-delay: -10s;
-  animation-duration: 36s;
+  width: 420px; height: 420px;
+  background: radial-gradient(circle, rgba(42, 122, 114, 0.25) 0%, transparent 70%);
+  top: 35%; right: -10%;
+  animation: orbDrift2 34s ease-in-out infinite;
 }
 .ambient-orb-3 {
-  width: 300px; height: 300px;
-  background: radial-gradient(circle, #c9b89f 0%, transparent 70%);
-  bottom: -5%; left: 25%;
-  animation-delay: -20s;
-  animation-duration: 32s;
+  width: 380px; height: 380px;
+  background: radial-gradient(circle, rgba(232, 133, 74, 0.3) 0%, transparent 70%);
+  bottom: -10%; left: 15%;
+  animation: orbDrift3 30s ease-in-out infinite;
 }
 .ambient-orb-4 {
-  width: 250px; height: 250px;
-  background: radial-gradient(circle, var(--red-soft) 0%, transparent 70%);
-  top: 60%; left: 50%;
-  animation-delay: -7s;
-  animation-duration: 38s;
+  width: 300px; height: 300px;
+  background: radial-gradient(circle, rgba(217, 48, 37, 0.2) 0%, transparent 70%);
+  top: 50%; left: 45%;
+  animation: orbDrift4 38s ease-in-out infinite;
 }
-@keyframes orbFloat {
+.ambient-orb-5 {
+  width: 360px; height: 360px;
+  background: radial-gradient(circle, rgba(194, 102, 45, 0.2) 0%, transparent 70%);
+  top: 5%; right: 20%;
+  animation: orbDrift5 32s ease-in-out infinite;
+}
+@keyframes orbDrift1 {
   0%, 100% { transform: translate(0, 0) scale(1); }
-  33%      { transform: translate(18px, -12px) scale(1.03); }
-  66%      { transform: translate(-12px, 15px) scale(0.97); }
+  25%       { transform: translate(70px, 50px) scale(1.06); }
+  50%       { transform: translate(40px, 90px) scale(0.94); }
+  75%       { transform: translate(-20px, 55px) scale(1.03); }
+}
+@keyframes orbDrift2 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  25%       { transform: translate(-80px, 40px) scale(1.05); }
+  50%       { transform: translate(-50px, -70px) scale(0.95); }
+  75%       { transform: translate(-90px, -25px) scale(1.04); }
+}
+@keyframes orbDrift3 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33%       { transform: translate(65px, -55px) scale(1.07); }
+  66%       { transform: translate(-40px, -80px) scale(0.93); }
+}
+@keyframes orbDrift4 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  25%       { transform: translate(-60px, -50px) scale(1.08); }
+  50%       { transform: translate(50px, -70px) scale(0.92); }
+  75%       { transform: translate(75px, 25px) scale(1.06); }
+}
+@keyframes orbDrift5 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  40%       { transform: translate(-50px, 65px) scale(1.07); }
+  70%       { transform: translate(60px, 35px) scale(0.93); }
 }
 
 /* ============================================================
@@ -1534,4 +1559,48 @@ a:hover { color: var(--red); }
   background: var(--red);
   border-color: var(--red);
   color: #fff;
+}
+/* ============================================================
+   TOUR NUDGE — quiet italic hint, auto-fades
+   ============================================================ */
+.tour-nudge {
+  font-family: var(--font-body);
+  font-style: italic;
+  font-size: 0.88rem;
+  color: var(--ink-faint);
+  margin-bottom: 14px;
+  animation: tourFadeIn 0.5s ease forwards;
+}
+.tour-nudge-fade {
+  animation: tourFadeOut 0.6s ease forwards;
+}
+@keyframes tourFadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes tourFadeOut {
+  from { opacity: 1; }
+  to   { opacity: 0; }
+}
+
+/* ============================================================
+   TOUR PROGRESS DOTS — in TopNav
+   ============================================================ */
+.tour-progress {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 8px;
+}
+.tour-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  border: 1.5px solid var(--border-strong);
+  background: transparent;
+  transition: background 0.3s ease, border-color 0.3s ease;
+}
+.tour-dot.done {
+  background: var(--ink-muted);
+  border-color: var(--ink-muted);
 }

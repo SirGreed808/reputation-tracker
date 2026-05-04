@@ -2,9 +2,11 @@ import { useEffect, useState } from 'react'
 import { api } from '../lib/api'
 import type { FollowupRequest } from '../types'
 import CTAStrip from '../components/CTAStrip'
+import { useTourProgress } from '../hooks/useTourProgress'
+import TourNudge from '../components/TourNudge'
 
 const channels = [
-  { id: 'email', label: 'Email', desc: 'Real email sent via Resend' },
+  { id: 'email', label: 'Email', desc: 'Simulated — shows preview only' },
   { id: 'sms', label: 'SMS', desc: 'Simulated — shows preview only' },
   { id: 'qr', label: 'QR Code', desc: 'Download printable card' },
 ] as const
@@ -18,6 +20,7 @@ export default function Followups() {
   const [sending, setSending] = useState(false)
   const [result, setResult] = useState<{ type: 'success' | 'qr' | 'error'; message: string; qrDataUrl?: string } | null>(null)
   const [smsPreview, setSmsPreview] = useState<string | null>(null)
+  const { completed, complete } = useTourProgress()
 
   useEffect(() => {
     api.followups.list().then(setRequests).catch(() => {})
@@ -46,6 +49,7 @@ export default function Followups() {
       } else {
         setResult({ type: 'success', message: 'Email sent successfully.' })
       }
+      complete('followups')
       setName(''); setEmail(''); setPhone('')
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Could not send'
@@ -61,6 +65,7 @@ export default function Followups() {
       setRequests(prev => [data, ...prev])
       setSmsPreview(null)
       setResult({ type: 'success', message: 'SMS logged as simulated.' })
+      complete('followups')
       setName(''); setPhone('')
     } catch {
       setResult({ type: 'error', message: 'Could not log — please try again.' })
@@ -75,6 +80,11 @@ export default function Followups() {
           <p className="page-subtitle">Send review requests to recent customers</p>
         </div>
       </div>
+
+      <TourNudge
+        text="Send yourself a test follow-up request."
+        done={completed.has('followups')}
+      />
 
       <div className="followup-grid">
         <div className="card">

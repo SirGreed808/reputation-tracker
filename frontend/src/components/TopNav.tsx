@@ -1,14 +1,17 @@
 import { NavLink } from 'react-router-dom'
+import { useTourProgress } from '../hooks/useTourProgress'
 
 interface Props { alertCount: number }
 
 export default function TopNav({ alertCount }: Props) {
+  const { completed } = useTourProgress()
+
   return (
     <header className="top-nav">
       <div className="top-nav-inner">
         <div className="top-nav-brand">
           <span className="top-nav-logo">RepuTrack</span>
-          <span className="top-nav-demo-badge">Live Demo · Kai's Auto Repair</span>
+          <span className="top-nav-demo-badge">Live Demo</span>
         </div>
         <nav className="top-nav-links">
           <NavLink to="/" end className={({ isActive }) => `top-nav-link${isActive ? ' active' : ''}`}>
@@ -24,6 +27,11 @@ export default function TopNav({ alertCount }: Props) {
             Follow-ups
           </NavLink>
         </nav>
+        <div className="tour-progress" aria-label="Demo tour progress">
+          <span className={`tour-dot${completed.has('dashboard') ? ' done' : ''}`} />
+          <span className={`tour-dot${completed.has('reviews') ? ' done' : ''}`} />
+          <span className={`tour-dot${completed.has('followups') ? ' done' : ''}`} />
+        </div>
         <a
           href="https://honestdev808.com"
           target="_blank"

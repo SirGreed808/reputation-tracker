@@ -7,3 +7,6 @@ dist
 .DS_Store
 *.log
 .vercel
+
+# Claude Code local state
+.claude/

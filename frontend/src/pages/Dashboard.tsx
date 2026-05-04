@@ -7,6 +7,8 @@ import ScoreCard from '../components/ScoreCard'
 import TrendChart from '../components/TrendChart'
 import ReviewFeed from '../components/ReviewFeed'
 import CTAStrip from '../components/CTAStrip'
+import { useTourProgress } from '../hooks/useTourProgress'
+import TourNudge from '../components/TourNudge'
 
 export default function Dashboard() {
   const [stats, setStats] = useState<StatsResponse | null>(null)
@@ -14,6 +16,7 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true)
   const [toast, setToast] = useState(false)
   const [toastExiting, setToastExiting] = useState(false)
+  const { completed, complete } = useTourProgress()
 
   function dismissToast() {
     setToastExiting(true)
@@ -36,6 +39,7 @@ export default function Dashboard() {
   async function markResponded(id: string) {
     await api.reviews.respond(id)
     setReviews(prev => prev.map(r => r.id === id ? { ...r, responded_at: new Date().toISOString() } : r))
+    complete('dashboard')
   }
 
   if (loading) return <div className="loading-bar" />
@@ -83,6 +87,11 @@ export default function Dashboard() {
           <TrendChart trend={stats.trend} style={{ '--stagger': '0.15s' } as React.CSSProperties} />
         </div>
       )}
+
+      <TourNudge
+        text="Try opening a review below — the AI response button actually works."
+        done={completed.has('dashboard')}
+      />
 
       <ReviewFeed reviews={reviews.slice(0, 5)} onRespond={markResponded} />
 

@@ -3,6 +3,8 @@ import { api } from '../lib/api'
 import type { Review } from '../types'
 import { FALLBACK_REVIEWS } from '../lib/fallback'
 import ReviewFeed from '../components/ReviewFeed'
+import { useTourProgress } from '../hooks/useTourProgress'
+import TourNudge from '../components/TourNudge'
 
 type SentimentFilter = 'all' | 'positive' | 'neutral' | 'negative'
 type StatusFilter = 'all' | 'needs-response' | 'responded'
@@ -13,6 +15,7 @@ export default function Reviews() {
   const [status, setStatus] = useState<StatusFilter>('all')
   const [search, setSearch] = useState('')
   const [loading, setLoading] = useState(true)
+  const { completed, complete } = useTourProgress()
 
   useEffect(() => {
     api.reviews.list()
@@ -57,17 +60,22 @@ export default function Reviews() {
           type="search"
           placeholder="Search by name or keyword…"
           value={search}
-          onChange={e => setSearch(e.target.value)}
+          onChange={e => { setSearch(e.target.value); if (e.target.value) complete('reviews') }}
           aria-label="Search reviews"
         />
       </div>
+
+      <TourNudge
+        text="Filter by Negative to see the reviews that matter most."
+        done={completed.has('reviews')}
+      />
 
       <div className="filter-rows">
         <div className="filter-tabs" role="radiogroup" aria-label="Filter by sentiment">
           {(['all', 'positive', 'neutral', 'negative'] as const).map(s => (
             <button key={s} role="radio" aria-checked={sentiment === s}
               className={`filter-tab${sentiment === s ? ' active' : ''}`}
-              onClick={() => setSentiment(s)}
+              onClick={() => { setSentiment(s); complete('reviews') }}
             >
               <span style={{ textTransform: 'capitalize' }}>{s}</span>
               <span className="filter-tab-count">({counts[s]})</span>
@@ -83,7 +91,7 @@ export default function Reviews() {
           ] as const).map(({ key, label }) => (
             <button key={key} role="radio" aria-checked={status === key}
               className={`filter-tab${status === key ? ' active' : ''}`}
-              onClick={() => setStatus(key)}
+              onClick={() => { setStatus(key); complete('reviews') }}
             >
               {label}
               <span className="filter-tab-count">({counts[key]})</span>
